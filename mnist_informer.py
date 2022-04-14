@@ -45,7 +45,7 @@ texts = ["Перцептрон - математический аналог не�
          "Наша модель нейронной сети", "График точности", "График функции потерь", "Матрица ошибок"
 
          ]
-file_path = '/sysroot/home/user/Загрузки/PyProject/mnist_streamlit/venv/'
+#file_path = '/sysroot/home/user/Загрузки/PyProject/mnist_streamlit/venv/'
 
 for header_name, subheader_name, file_name, text_header, text in zip(header_names, subheader_names, file_names, text_headers, texts):
     # st.subheader(header_name)
@@ -56,7 +56,8 @@ for header_name, subheader_name, file_name, text_header, text in zip(header_name
             with st.container():
                 st.subheader(subheader_name)
 
-                image = cv2.imread(file_path + file_name + '.png')
+                #image = cv2.imread(file_path + file_name + '.png')
+                image = cv2.imread(file_name + '.png')
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 st.image(image)
 
