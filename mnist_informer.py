@@ -1,6 +1,5 @@
 import streamlit as st
 
-import cv2
 from PIL import Image #Отрисовка изображений
 
 st.set_page_config(layout="wide")
@@ -57,8 +56,8 @@ for header_name, subheader_name, file_name, text_header, text in zip(header_name
                 st.subheader(subheader_name)
 
                 #image = cv2.imread(file_path + file_name + '.png')
-                image = cv2.imread(file_name + '.png')
-                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                image = Image.open(file_name + '.png')
                 st.image(image)
 
         with col12:
