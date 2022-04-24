@@ -47,7 +47,7 @@ texts = ["Перцептрон - математический аналог не�
          "Наша модель нейронной сети", "График точности", "График функции потерь", "Матрица ошибок"
 
          ]
-file_path = '/sysroot/home/user/Загрузки/PyProject/mnist_streamlit/venv/'
+file_path = '/mnist_theory/venv/'
 
 for header_name, subheader_name, file_name, text_header, text in zip(header_names, subheader_names, file_names, text_headers, texts):
     # st.subheader(header_name)
@@ -74,15 +74,6 @@ def img_preprocess(img):
     # To convert PIL Image to numpy array:
     img_array = np.array(img)
 
-    # Check the type of img_array:
-    # Should output: <class 'numpy.ndarray'>
-    # st.write(type(img_array))
-
-    # Check the shape of img_array:
-    # Should output shape: (height, width, channels)
-    # st.write(img_array.shape)
-
-    # make square shape
     img_height, img_width = img_array.shape[0], img_array.shape[1]
     img_center = int(img_width / 2)
     left_border = int(img_center - img_height / 2)
@@ -139,7 +130,6 @@ with col21:
                 cv2.imwrite('test1.jpg', frame)
                 Onclicktrue = False
 
-
         else:
             st.write('Stopped')
 
@@ -150,35 +140,13 @@ with col22:
         img_file_buffer = st.camera_input("Фото")
 
         if img_file_buffer is not None:
-            # To read image file buffer as a PIL Image:
             img = Image.open(img_file_buffer)
 
-            # To convert PIL Image to numpy array:
             img_array = np.array(img)
 
-            # Check the type of img_array:
-            # Should output: <class 'numpy.ndarray'>
             st.write(type(img_array))
 
-            # Check the shape of img_array:
-            # Should output shape: (height, width, channels)
             st.write(img_array.shape)
-            #img_array1 = img_array[:,190:679,:]
-            #st.write(img_array1.shape)
-
-            #im = Image.fromarray(img_array1)
-            #im.save("your_file_image.png")
-
-            #image11 = Image.open('/sysroot/home/user/Загрузки/PyProject/mnist_streamlit/your_file_image.png')
-            #img11 = image11.resize((28, 28), Image.ANTIALIAS)
-
-            #THRESHOLD_VALUE = 150
-            #img12 = img11.convert("L")
-
-            #imgData = np.asarray(img12)
-            #thresholdedData = (imgData > THRESHOLD_VALUE) * 1.0
-            #imgData1 = np.expand_dims(thresholdedData, axis=0)
-            #st.write(imgData1.shape)
 
             mnist_like = img_preprocess(img_array)
 
