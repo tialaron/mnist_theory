@@ -1,6 +1,9 @@
 import streamlit as st
 
+import cv2
 from PIL import Image #Отрисовка изображений
+import numpy as np
+from tensorflow.keras.models import load_model
 
 st.set_page_config(layout="wide")
 st.title("Распознавание рукописных цифр искусственной нейронной сетью (ИНС)")
@@ -44,7 +47,7 @@ texts = ["Перцептрон - математический аналог не�
          "Наша модель нейронной сети", "График точности", "График функции потерь", "Матрица ошибок"
 
          ]
-#file_path = '/sysroot/home/user/Загрузки/PyProject/mnist_streamlit/venv/'
+file_path = '/sysroot/home/user/Загрузки/PyProject/mnist_streamlit/venv/'
 
 for header_name, subheader_name, file_name, text_header, text in zip(header_names, subheader_names, file_names, text_headers, texts):
     # st.subheader(header_name)
@@ -57,7 +60,7 @@ for header_name, subheader_name, file_name, text_header, text in zip(header_name
 
                 #image = cv2.imread(file_path + file_name + '.png')
                 #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-                image = Image.open(file_name + '.png')
+                image = Image.open(file_path + file_name + '.png')
                 st.image(image)
 
         with col12:
@@ -65,3 +68,138 @@ for header_name, subheader_name, file_name, text_header, text in zip(header_name
                 # st.subheader("Информация о перцептроне")
 
                 txt = st.text_area(text_header, text, height=200)
+
+
+def img_preprocess(img):
+    # To convert PIL Image to numpy array:
+    img_array = np.array(img)
+
+    # Check the type of img_array:
+    # Should output: <class 'numpy.ndarray'>
+    # st.write(type(img_array))
+
+    # Check the shape of img_array:
+    # Should output shape: (height, width, channels)
+    # st.write(img_array.shape)
+
+    # make square shape
+    img_height, img_width = img_array.shape[0], img_array.shape[1]
+    img_center = int(img_width / 2)
+    left_border = int(img_center - img_height / 2)
+    right_border = int(img_center + img_height / 2)
+    img_array1 = img_array[:, left_border:right_border, :]
+
+    # Check the shape of img_array:
+    # st.write(img_array1.shape)
+
+    # convert n save
+    im = Image.fromarray(img_array1)
+    im.save("your_file_image.png")
+    # image11 = Image.open('/sysroot/home/user/Загрузки/PyProject/mnist_streamlit/your_file_image.png')
+    image11 = Image.open('your_file_image.png')
+    img11 = image11.resize((28, 28), Image.ANTIALIAS)
+
+    # convert image to one channel & Numpy array
+    img12 = img11.convert("L")
+    imgData = np.asarray(img12)
+
+    # Calculate THRESHOLD_VALUE
+    # assume dark digit & white sheet
+    step_lobe = .4
+    mid_img_color = np.sum(imgData) / imgData.size
+    min_img_color = imgData.min()
+
+    THRESHOLD_VALUE = int(mid_img_color - (mid_img_color - min_img_color) * step_lobe)
+
+    print(mid_img_color)
+    print(min_img_color)
+    print(THRESHOLD_VALUE)
+
+    thresholdedData = (imgData < THRESHOLD_VALUE) * 1.0
+    imgData1 = np.expand_dims(thresholdedData, axis=0)
+    return imgData1
+
+def show_image(img):
+  plt.imshow(Image.fromarray(img).convert('RGB')) #Отрисовка картинки .convert('RGB')
+  plt.show()
+
+col21 , col22 = st.columns(2)
+with col21:
+    with st.container():
+        st.title("Видеопоток от вебкамеры")
+        run = st.checkbox('Run')
+        FRAME_WINDOW = st.image([])
+        camera = cv2.VideoCapture(0)
+        Onclicktrue = st.button('Сделать снимок экрана', key=1676356)
+        while run:
+            _, frame = camera.read()
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            FRAME_WINDOW.image(frame)
+            if Onclicktrue:
+                cv2.imwrite('test1.jpg', frame)
+                Onclicktrue = False
+
+
+        else:
+            st.write('Stopped')
+
+
+with col22:
+    with st.container():
+        st.title('Снимок экрана')
+        img_file_buffer = st.camera_input("Фото")
+
+        if img_file_buffer is not None:
+            # To read image file buffer as a PIL Image:
+            img = Image.open(img_file_buffer)
+
+            # To convert PIL Image to numpy array:
+            img_array = np.array(img)
+
+            # Check the type of img_array:
+            # Should output: <class 'numpy.ndarray'>
+            st.write(type(img_array))
+
+            # Check the shape of img_array:
+            # Should output shape: (height, width, channels)
+            st.write(img_array.shape)
+            #img_array1 = img_array[:,190:679,:]
+            #st.write(img_array1.shape)
+
+            #im = Image.fromarray(img_array1)
+            #im.save("your_file_image.png")
+
+            #image11 = Image.open('/sysroot/home/user/Загрузки/PyProject/mnist_streamlit/your_file_image.png')
+            #img11 = image11.resize((28, 28), Image.ANTIALIAS)
+
+            #THRESHOLD_VALUE = 150
+            #img12 = img11.convert("L")
+
+            #imgData = np.asarray(img12)
+            #thresholdedData = (imgData > THRESHOLD_VALUE) * 1.0
+            #imgData1 = np.expand_dims(thresholdedData, axis=0)
+            #st.write(imgData1.shape)
+
+            mnist_like = img_preprocess(img_array)
+
+            model_2d = load_model('/sysroot/home/user/Загрузки/PyProject/mnist_streamlit/venv/mnist_2d.h5')
+
+            #st.write(imgData1)
+
+            y_predict1 = model_2d.predict(mnist_like)
+            y_maxarg = np.argmax(y_predict1, axis=1)
+            st.write(y_predict1)
+            st.write('Нейронная сеть считает, что это ', y_maxarg)
+
+
+
+
+
+
+
+
+
+
+
+
+
