@@ -1,6 +1,6 @@
 import streamlit as st
 
-import cv2
+#import cv2
 from PIL import Image #Отрисовка изображений
 import numpy as np
 from tensorflow.keras.models import load_model
@@ -80,10 +80,6 @@ def img_preprocess(img):
     right_border = int(img_center + img_height / 2)
     img_array1 = img_array[:, left_border:right_border, :]
 
-    # Check the shape of img_array:
-    # st.write(img_array1.shape)
-
-    # convert n save
     im = Image.fromarray(img_array1)
     im.save("your_file_image.png")
     # image11 = Image.open('/mnist_theory/your_file_image.png')
@@ -94,8 +90,6 @@ def img_preprocess(img):
     img12 = img11.convert("L")
     imgData = np.asarray(img12)
 
-    # Calculate THRESHOLD_VALUE
-    # assume dark digit & white sheet
     step_lobe = .4
     mid_img_color = np.sum(imgData) / imgData.size
     min_img_color = imgData.min()
@@ -114,50 +108,45 @@ def show_image(img):
   plt.imshow(Image.fromarray(img).convert('RGB')) #Отрисовка картинки .convert('RGB')
   plt.show()
 
-col21 , col22 = st.columns(2)
-with col21:
-    with st.container():
-        st.title("Видеопоток от вебкамеры")
-        run = st.checkbox('Run')
-        FRAME_WINDOW = st.image([])
-        camera = cv2.VideoCapture(0)
-        Onclicktrue = st.button('Сделать снимок экрана', key=1676356)
-        while run:
-            _, frame = camera.read()
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            FRAME_WINDOW.image(frame)
-            if Onclicktrue:
-                cv2.imwrite('test1.jpg', frame)
-                Onclicktrue = False
+#col21 , col22 = st.columns(2)
+#with col21:
+#    with st.container():
+#        st.title("Видеопоток от вебкамеры")
+#        run = st.checkbox('Run')
+#        FRAME_WINDOW = st.image([])
+#        camera = cv2.VideoCapture(0)
+#        Onclicktrue = st.button('Сделать снимок экрана', key=1676356)
+#        while run:
+#            _, frame = camera.read()
+#            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+#            FRAME_WINDOW.image(frame)
+#            if Onclicktrue:
+#                cv2.imwrite('test1.jpg', frame)
+#                Onclicktrue = False
 
-        else:
-            st.write('Stopped')
+#        else:
+#            st.write('Stopped')
 
 
-with col22:
-    with st.container():
-        st.title('Снимок экрана')
-        img_file_buffer = st.camera_input("Фото")
+#with col22:
+#    with st.container():
+#        st.title('Снимок экрана')
+#        img_file_buffer = st.camera_input("Фото")
 
-        if img_file_buffer is not None:
-            img = Image.open(img_file_buffer)
-
-            img_array = np.array(img)
-
-            st.write(type(img_array))
-
-            st.write(img_array.shape)
-
-            mnist_like = img_preprocess(img_array)
-
-            model_2d = load_model('/mnist_theory/venv/mnist_2d.h5')
+#        if img_file_buffer is not None:
+#            img = Image.open(img_file_buffer)
+#            img_array = np.array(img)
+#            st.write(type(img_array))
+#            st.write(img_array.shape)
+#            mnist_like = img_preprocess(img_array)
+#            model_2d = load_model('/mnist_theory/venv/mnist_2d.h5')
 
             #st.write(imgData1)
 
-            y_predict1 = model_2d.predict(mnist_like)
-            y_maxarg = np.argmax(y_predict1, axis=1)
-            st.write(y_predict1)
-            st.write('Нейронная сеть считает, что это ', y_maxarg)
+#            y_predict1 = model_2d.predict(mnist_like)
+#            y_maxarg = np.argmax(y_predict1, axis=1)
+#            st.write(y_predict1)
+#            st.write('Нейронная сеть считает, что это ', y_maxarg)
 
 
 
