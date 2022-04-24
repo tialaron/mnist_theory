@@ -95,7 +95,7 @@ def img_preprocess(img):
     # convert n save
     im = Image.fromarray(img_array1)
     im.save("your_file_image.png")
-    # image11 = Image.open('/sysroot/home/user/Загрузки/PyProject/mnist_streamlit/your_file_image.png')
+    # image11 = Image.open('/mnist_theory/your_file_image.png')
     image11 = Image.open('your_file_image.png')
     img11 = image11.resize((28, 28), Image.ANTIALIAS)
 
@@ -182,7 +182,7 @@ with col22:
 
             mnist_like = img_preprocess(img_array)
 
-            model_2d = load_model('/sysroot/home/user/Загрузки/PyProject/mnist_streamlit/venv/mnist_2d.h5')
+            model_2d = load_model('/mnist_theory/venv/mnist_2d.h5')
 
             #st.write(imgData1)
 
